@@ -260,6 +260,36 @@ def stndrd(df, quantitative_features, disc):
     return standard_df
 
 def split(features, targets):
+    """
+    Splits the input data into training and testing sets using scikit-learn's `train_test_split` function.
+
+    Parameters:
+    -----------
+    features : array-like, shape (n_samples, n_features)
+        The input features to be split into training and testing sets.
+
+    targets : array-like, shape (n_samples,)
+        The target values to be split into training and testing sets.
+
+    Returns:
+    --------
+    X_train : array-like, shape (n_train_samples, n_features)
+        The training set of input features.
+
+    X_test : array-like, shape (n_test_samples, n_features)
+        The testing set of input features.
+
+    y_train : array-like, shape (n_train_samples,)
+        The training set of target values.
+
+    y_test : array-like, shape (n_test_samples,)
+        The testing set of target values.
+
+    Raises:
+    -------
+    AssertionError:
+        If the number of samples in `X_train` and `y_train` is not equal.
+    """
     X_train, X_test, y_train, y_test = train_test_split(
         features, targets, random_state=0, test_size=0.2)
     assert X_train.shape[0] == y_train.shape[0]
@@ -267,8 +297,60 @@ def split(features, targets):
     return X_train, X_test, y_train, y_test
 
 def plot_cond(df):
+    """
+    Plot conditional distributions of each feature in a DataFrame based on the "death" column.
+
+    Parameters:
+        df (pandas.DataFrame): The DataFrame containing the data.
+
+    Returns:
+        None
+
+    Example:
+        plot_cond(df)
+    """
     for col in df.drop("death", axis=1).columns:
         sns.displot(data=df, x=col, col="death", kde=True)
         plt.show()
 
 
+def violin(features, df):
+    """
+       Create violin plots for specified features in a DataFrame, with additional grouping and splitting based on the "Race" and "Sex" columns.
+
+       Parameters:
+           features (list): A list of column names representing the features to create violin plots for.
+           df (pandas.DataFrame): The DataFrame containing the data.
+
+       Returns:
+           None
+
+       Example:
+           features = ['Feature1', 'Feature2', 'Feature3']
+           violin(features, df)
+       """
+    for feature in features:
+        if feature == "Race" or feature == "Sex":
+            continue
+        g = sns.catplot(data=df, x="death", y=feature, kind="violin",
+                        hue="Sex", palette="pastel", split=True, col="Race")
+        plt.show()
+
+def corr(transformed_data):
+    """
+    Create a correlation heatmap for a given DataFrame of transformed data.
+
+    Parameters:
+        transformed_data (pandas.DataFrame): The DataFrame containing the transformed data.
+
+    Returns:
+        None
+
+    Example:
+        corr(transformed_data)
+    """
+    cmap = sns.diverging_palette(300, 150, s=40, l=65, n=10)
+    corrmat = transformed_data.corr()
+    plt.subplots(figsize=(18, 18))
+    sns.heatmap(corrmat, cmap=cmap, annot=True, square=True)
+    plt.show()
