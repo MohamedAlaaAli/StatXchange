@@ -1,6 +1,8 @@
 import functions
 import handel_outliers
 import statstical_tests
+import GausNB
+import MLModels
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -123,3 +125,12 @@ functions.violin(features, filtered_data)
 # Let's visualize the correlations between all our features
 functions.corr(transformed_data)
 
+# Now, let's try our NB Classifier
+NB_scratch = GausNB.NaiveBayes()
+NB_scratch.fit(X_train, y_train)
+y_pred = NB_scratch.predict(X_test)
+
+# Let's check our model's accuracy
+print(f"Naive Bayes accuracy: {GausNB.accuracy(y_test, y_pred)}")
+
+MLModels.train_all_models(X_train, X_test, y_train, y_test)
